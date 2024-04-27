@@ -92,8 +92,49 @@ std::set<std::string> boggle(const std::set<std::string>& dict, const std::set<s
 }
 
 bool boggleHelper(const std::set<std::string>& dict, const std::set<std::string>& prefix, const std::vector<std::vector<char> >& board, 
-								   std::string word, std::set<std::string>& result, unsigned int r, unsigned int c, int dr, int dc)
-{
-//add your solution here!
+                  std::string word, std::set<std::string>& result, unsigned int r, unsigned int c, int dr, int dc) {
+   
+    // check bounds
+    if (r >= board.size() || c >= board.size() || r < 0 || c < 0) {
+        return false;  // Out of bounds
+    }
+   
+    // append character at the current position to word
+    word += board[r][c];
 
+    // if prefix is not valid but it still  exists in the dict
+    if (prefix.find(word) == prefix.end()) {
+		if(dict.find(word) != dict.end()) {
+			result.insert(word);
+			return true;
+		}
+        return false;  // if prefix not valid, terminate this path
+    }
+
+	else {
+		// is it a valid word
+		bool isWord = (dict.find(word) != dict.end());
+
+		// Continue to search in the same direction
+		bool further = boggleHelper(dict, prefix, board, word, result, r + dr, c + dc, dr, dc);
+
+		// if (isWord && !further) {
+		//     // if it is valid and no further valid word was found, insert
+		//     result.insert(word);
+		//     return true; 
+		// }
+
+		if(further) {
+			return true;
+		} else {
+			if(isWord) {
+				result.insert(word);
+				return true;
+			} else {
+				return false;
+			}
+		}
+	}
+
+    
 }
